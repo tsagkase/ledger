@@ -9,6 +9,8 @@
 # Examples of use:
 #
 #   monthly-income-vs-expenses ledger.dat
+#   monthly-income-vs-expenses ledger.dat 2017
+#   monthly-income-vs-expenses ledger.dat "from 2016/01 to 2016/04"
 
 usage() {
 	echo "Usage: $0 ledger-data-file [period]"
