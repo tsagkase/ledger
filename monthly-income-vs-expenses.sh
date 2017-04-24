@@ -11,7 +11,7 @@
 #   monthly-income-vs-expenses ledger.dat
 
 usage() {
-	echo "Usage: $0 ledger-data-file"
+	echo "Usage: $0 ledger-data-file [period]"
 	exit 1
 }
 
@@ -22,18 +22,27 @@ err_report() {
 trap 'err_report $LINENO' ERR
 
 
-if [ $# -ne 1 ] ; then
+if [ $# -lt 1 ] || [ $# -gt 2 ] ; then
     usage
 else
     LEDGER_DATA_FILE=$1
+fi
+
+if [ $# -eq 2 ] ; then
+    PERIOD=$2
 fi
 
 if [ -z "$LEDGER_TERM" ]; then
   LEDGER_TERM="x11 size 1280,720 persist"
 fi
 
-ledger -f $LEDGER_DATA_FILE -j reg ^Income -M --collapse --empty --plot-amount-format="%(format_date(date, \"%Y-%m-%d\")) %(abs(quantity(scrub(display_amount))))\n" > ledgeroutput1.tmp
-ledger -f $LEDGER_DATA_FILE -j reg ^Expenses -M --collapse --empty > ledgeroutput2.tmp
+if [ -n "$PERIOD" ]; then
+	ledger -f $LEDGER_DATA_FILE -j reg ^Income -M --collapse --empty --plot-amount-format="%(format_date(date, \"%Y-%m-%d\")) %(abs(quantity(scrub(display_amount))))\n" -p "$PERIOD" > ledgeroutput1.tmp
+	ledger -f $LEDGER_DATA_FILE -j reg ^Expenses -M --collapse --empty -p "$PERIOD" > ledgeroutput2.tmp
+else
+	ledger -f $LEDGER_DATA_FILE -j reg ^Income -M --collapse --empty --plot-amount-format="%(format_date(date, \"%Y-%m-%d\")) %(abs(quantity(scrub(display_amount))))\n" > ledgeroutput1.tmp
+	ledger -f $LEDGER_DATA_FILE -j reg ^Expenses -M --collapse --empty > ledgeroutput2.tmp
+fi
 
 # The following section is meant to catch a bug in ledger where --empty
 # is not respected for empty initial entry
