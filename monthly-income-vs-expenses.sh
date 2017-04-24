@@ -35,6 +35,15 @@ fi
 ledger -f $LEDGER_DATA_FILE -j reg ^Income -M --collapse --empty --plot-amount-format="%(format_date(date, \"%Y-%m-%d\")) %(abs(quantity(scrub(display_amount))))\n" > ledgeroutput1.tmp
 ledger -f $LEDGER_DATA_FILE -j reg ^Expenses -M --collapse --empty > ledgeroutput2.tmp
 
+# The following section is meant to catch a bug in ledger where --empty
+# is not respected for empty initial entry
+LINES_COUNT1=$(wc -l ledgeroutput1.tmp | cut -f1 -d\ )
+LINES_COUNT2=$(wc -l ledgeroutput2.tmp | cut -f1 -d\ )
+if [ $LINES_COUNT1 -ne $LINES_COUNT2 ]; then
+	echo "ERROR: Income entries found to be $LINES_COUNT1 whilst expenses entries were $LINES_COUNT2. Exiting ..."
+	exit -1
+fi
+
 (cat <<EOF) | gnuplot
   set terminal $LEDGER_TERM
   set style data histogram
