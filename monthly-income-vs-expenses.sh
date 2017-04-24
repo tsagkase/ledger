@@ -37,11 +37,11 @@ if [ -z "$LEDGER_TERM" ]; then
 fi
 
 if [ -n "$PERIOD" ]; then
-	ledger -f $LEDGER_DATA_FILE -j reg ^Income -M --collapse --empty --plot-amount-format="%(format_date(date, \"%Y-%m-%d\")) %(abs(quantity(scrub(display_amount))))\n" -p "$PERIOD" > ledgeroutput1.tmp
-	ledger -f $LEDGER_DATA_FILE -j reg ^Expenses -M --collapse --empty -p "$PERIOD" > ledgeroutput2.tmp
+	ledger -f $LEDGER_DATA_FILE -j reg ^Income -M --collapse --empty --plot-amount-format="%(format_date(date, \"%Y-%m-%d\")) %(abs(quantity(scrub(display_amount))))\n" -p "$PERIOD" -X EUR > ledgeroutput1.tmp
+	ledger -f $LEDGER_DATA_FILE -j reg ^Expenses -M --collapse --empty -p "$PERIOD" -X EUR > ledgeroutput2.tmp
 else
-	ledger -f $LEDGER_DATA_FILE -j reg ^Income -M --collapse --empty --plot-amount-format="%(format_date(date, \"%Y-%m-%d\")) %(abs(quantity(scrub(display_amount))))\n" > ledgeroutput1.tmp
-	ledger -f $LEDGER_DATA_FILE -j reg ^Expenses -M --collapse --empty > ledgeroutput2.tmp
+	ledger -f $LEDGER_DATA_FILE -j reg ^Income -M --collapse --empty --plot-amount-format="%(format_date(date, \"%Y-%m-%d\")) %(abs(quantity(scrub(display_amount))))\n" -X EUR > ledgeroutput1.tmp
+	ledger -f $LEDGER_DATA_FILE -j reg ^Expenses -M --collapse --empty -X EUR > ledgeroutput2.tmp
 fi
 
 # The following section is meant to catch a bug in ledger where --empty
